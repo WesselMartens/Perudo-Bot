@@ -4,7 +4,7 @@ Wessel Martens
 7-Jan-2024
 
 Instructions:
-    Define a strategy X by defining a class StrategyX(Bot) as a child class of Bot
+    Create a strategy X by defining a class StrategyX(Bot) as a child class of Bot
     Write a bet function that returns a bet string which the Bot will play in the game
 """
 
