@@ -6,6 +6,7 @@ Wessel Martens
 Instructions:
     Create a strategy X by defining a class StrategyX(Bot) as a child class of Bot
     Write a bet function that returns a bet string which the Bot will play in the game
+    Assign "StrategyX" to your player in the game
 """
 
 import numpy as np
