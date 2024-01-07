@@ -39,7 +39,7 @@ class Bot():
         return map(int, bet_string.split("x"))
       
     def bet(self):
-        return input("Strategy is missing bet function - {self.player.get_name()} manually bets:")
+        return input("Strategy is missing bet function - player manually bets:")
 
 # Demo strategy bots
 class StrategyManual(Bot):
