@@ -80,7 +80,7 @@ class Strategy1up(Bot):
         return bet
 
 # Proper strategy bot
-class StrategyStats(Bot):
+class StrategyZero(Bot):
     def __init__(self, perudo_game, perudo_round, perudo_player):
         super().__init__(perudo_game, perudo_round, perudo_player)
     
