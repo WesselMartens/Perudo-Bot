@@ -6,5 +6,5 @@ Wessel Martens
 
 from perudo_game import *
 
-game = Perudo(dice=5, players=["Wessel", "Floris", "Jelte"], bots=["StrategyBluff", "Strategy1up", "StrategyManual"], dark=False)
+game = Perudo(dice=5, players=["Wessel", "Floris", "Jelte"], bots=["StrategyManual", "StrategyBotZero", "StrategyBotZero"], dark=False)
 game.play_game()
