@@ -83,7 +83,13 @@ class Round():
                 PlayerBot = getattr(perudo_bots, player.bot)
                 bot = PlayerBot(self.game, self, player)
                 player_bet = bot.bet()
-                
+
+                # Validate turn
+                while not self.validate_turn(player_bet, memory_bet):
+                    print("Invalid bet. Please try again!")
+                    player_bet = input(f"Player {player.get_name()} manually bets: ")
+
+                # Evaluate turn
                 memory_player, memory_bet = self.evaluate_turn(player, player_bet, memory_player, memory_bet)
                 self.bets.append(player_bet)
     
