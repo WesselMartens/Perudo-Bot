@@ -170,7 +170,6 @@ class StrategyZero(Bot):
         if self.active_bet_string == None:
             final_bet = bet_proposal
             print(f"{self.player.get_name()}'s bot bets: {final_bet}")
-            print(bet_proposal, proposal_bet_prob)
         else:
             active_count, active_roll = self.decompose_bet_string(self.active_bet_string)
             active_bet_prob = self.get_bet_probability(active_count, active_roll)
