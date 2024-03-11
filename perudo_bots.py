@@ -26,9 +26,6 @@ class Bot():
         self.load_round_info()
         self.load_bets_info()
         self.load_next_player_info()
-        
-        self.compute_valid_bets()
-        self.compute_probability_grids()
 
     # Load information functions
     def load_game_info(self):
@@ -49,9 +46,66 @@ class Bot():
      
     def load_next_player_info(self):
         self.next_player = self.game.players[(self.game.turn+1) % len(self.game.players)]
-        self.next_player_dice_amount = self.next_player.count_dice()
+        self.next_player_dice_amount = self.next_player.count_dice()  
 
-    # Compute bet statistics functions
+    # Auxiliary functions
+    def compose_bet_string(self, count, roll):
+        return f"{count}x{roll}"
+
+    def decompose_bet_string(self, bet_string):
+        return map(int, bet_string.split("x"))
+      
+    def bet(self):
+        return input("Strategy is missing bet function - player manually bets: ")
+
+# Demo strategy bots
+# Bot 1: asks user to place a manual bet
+class StrategyManual(Bot):
+    def __init__(self, perudo_game, perudo_round, perudo_player):
+        super().__init__(perudo_game, perudo_round, perudo_player)
+    
+    def bet(self):
+        return input(f"{self.player.get_name()} manually bets: ")
+
+# Bot 2: calls bluff on any bet
+class StrategyBluff(Bot):
+    def __init__(self, perudo_game, perudo_round, perudo_player):
+        super().__init__(perudo_game, perudo_round, perudo_player)
+        
+    def bet(self):
+        if self.active_bet_string:
+            bet = "B"
+        else:
+            bet_count = 1
+            bet_roll = np.random.choice([1,2,3,4,5,6])
+            bet = self.compose_bet_string(bet_count, bet_roll)
+        print(f"{self.player.get_name()}'s bot bets: {bet}")
+        return bet
+
+# Bot 3: increases the count on any bet
+class Strategy1up(Bot):
+    def __init__(self, perudo_game, perudo_round, perudo_player):
+        super().__init__(perudo_game, perudo_round, perudo_player)
+    
+    def bet(self):
+        if self.active_bet_string:
+            active_count, active_roll = self.decompose_bet_string(self.active_bet_string)
+            bet_count = active_count + 1
+            bet_roll = active_roll
+        else:
+            bet_count = 1
+            bet_roll = np.random.choice([1,2,3,4,5,6])
+        bet = self.compose_bet_string(bet_count, bet_roll)
+        print(f"{self.player.get_name()}'s bot bets: {bet}")
+        return bet
+
+# Bot 4: Wessel's bot
+class StrategyZero(Bot):
+    def __init__(self, perudo_game, perudo_round, perudo_player):
+        super().__init__(perudo_game, perudo_round, perudo_player)
+        self.compute_valid_bets()
+        self.compute_probability_grids()
+        
     def compute_valid_bets(self):
         if self.active_bet_string == None:
             grid = np.full([6, self.amount_dice+1], True)
@@ -88,61 +142,8 @@ class Bot():
                         p_roll_count = comb(self.amount_other_dice, other_count) * (1/3)**other_count * (2/3)**(self.amount_other_dice-other_count)
                 grid[roll-1, count] = p_roll_count
         self.exact_probability_grid = grid
-        self.cumulative_probability_grid = np.cumsum(grid[:,::-1], axis=1)[:,::-1]    
-
-    # Auxiliary functions
-    def compose_bet_string(self, count, roll):
-        return f"{count}x{roll}"
-
-    def decompose_bet_string(self, bet_string):
-        return map(int, bet_string.split("x"))
-      
-    def bet(self):
-        return input("Strategy is missing bet function - player manually bets: ")
-
-# Demo strategy bots
-class StrategyManual(Bot): # asks user to place a manual bet
-    def __init__(self, perudo_game, perudo_round, perudo_player):
-        super().__init__(perudo_game, perudo_round, perudo_player)
+        self.cumulative_probability_grid = np.cumsum(grid[:,::-1], axis=1)[:,::-1]      
     
-    def bet(self):
-        return input(f"{self.player.get_name()} manually bets: ")
-
-class StrategyBluff(Bot): # calls bluff on any bet
-    def __init__(self, perudo_game, perudo_round, perudo_player):
-        super().__init__(perudo_game, perudo_round, perudo_player)
-        
-    def bet(self):
-        if self.active_bet_string:
-            bet = "B"
-        else:
-            bet_count = 1
-            bet_roll = np.random.choice([1,2,3,4,5,6])
-            bet = self.compose_bet_string(bet_count, bet_roll)
-        print(f"{self.player.get_name()}'s bot bets: {bet}")
-        return bet
-
-class Strategy1up(Bot): # increases the count on any bet
-    def __init__(self, perudo_game, perudo_round, perudo_player):
-        super().__init__(perudo_game, perudo_round, perudo_player)
-    
-    def bet(self):
-        if self.active_bet_string:
-            active_count, active_roll = self.decompose_bet_string(self.active_bet_string)
-            bet_count = active_count + 1
-            bet_roll = active_roll
-        else:
-            bet_count = 1
-            bet_roll = np.random.choice([1,2,3,4,5,6])
-        bet = self.compose_bet_string(bet_count, bet_roll)
-        print(f"{self.player.get_name()}'s bot bets: {bet}")
-        return bet
-
-# Proper strategy bot
-class StrategyZero(Bot):
-    def __init__(self, perudo_game, perudo_round, perudo_player):
-        super().__init__(perudo_game, perudo_round, perudo_player)
-        
     def bet(self):
         
         bet_proposal = self.compute_bet_proposal(0.6)
