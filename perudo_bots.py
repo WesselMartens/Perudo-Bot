@@ -186,9 +186,10 @@ class StrategyZero(Bot):
                 final_bet = "B"
             else:
                 final_bet = bet_proposal
-            print(f"{self.player.get_name()}'s bot bets: {final_bet}")
-            print(self.active_bet_string, active_bet_prob)
-            print(bet_proposal, proposal_bet_prob)
+
+        print(f"{self.player.get_name()}'s bot bets: {final_bet}")
+        print(self.active_bet_string, active_bet_prob)
+        print(bet_proposal, proposal_bet_prob)
         
         return final_bet
     
