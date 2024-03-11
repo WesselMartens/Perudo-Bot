@@ -1,7 +1,7 @@
 """
 Perudo game
 Wessel Martens
-7-Jan-2024
+11-Mar-2024
 """
 
 import numpy as np
@@ -53,7 +53,8 @@ class Round():
         self.dice = np.array([])
         self.counts = {}
         
-        self.bets = []
+        self.bet_strings = []
+        self.bet_dice_amounts = []
         
     def play(self):
         input(f"\nPress a key to play round: {self.game.round_number}")
@@ -76,22 +77,23 @@ class Round():
         for player in round_cycle:
             if self.live == True:
                 if self.game.dark: print("\n"*25)
-                print("\nBets this round: ", *self.bets)
+                print("\nBets this round: ", *self.bet_strings)
                 print(f"{player.get_name()} has dice:", player.show_dice())
                 
                 # Invoke bot
                 PlayerBot = getattr(perudo_bots, player.bot)
                 bot = PlayerBot(self.game, self, player)
                 player_bet = bot.bet()
-
+                
                 # Validate turn
                 while not self.validate_turn(player_bet, memory_bet):
                     print("Invalid bet. Please try again!")
                     player_bet = input(f"Player {player.get_name()} manually bets: ")
-
+                
                 # Evaluate turn
                 memory_player, memory_bet = self.evaluate_turn(player, player_bet, memory_player, memory_bet)
-                self.bets.append(player_bet)
+                self.bet_strings.append(player_bet)
+                self.bet_dice_amounts.append(player.count_dice())
     
     def update_players(self):
         for player in self.game.players:
