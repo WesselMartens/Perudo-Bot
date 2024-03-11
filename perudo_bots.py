@@ -13,6 +13,14 @@ import numpy as np
 from perudo_game import *
 
 # Parent class for all bots
+import random
+import numpy as np
+from math import comb
+from perudo_game import *
+
+np.set_printoptions(suppress=True)
+
+# Parent class for all bots
 class Bot():
     def __init__(self, perudo_game, perudo_round, perudo_player):
         self.game = perudo_game
@@ -21,14 +29,16 @@ class Bot():
         
         self.load_game_info()
         self.load_round_info()
-    
+        # to do: dice per player making a bet
+
     def load_game_info(self):
         self.amount_players = len(self.game.players)
         self.amount_dice = len(self.round.dice)
         
     def load_round_info(self):
         self.own_dice = self.player.show_dice()
-        self.own_dice_amount = self.player.count_dice()
+        self.amount_own_dice = self.player.count_dice()
+        self.amount_other_dice = self.amount_dice - self.amount_own_dice
         self.round_bets = self.round.bets
         self.active_bet = (self.round_bets or [None])[-1]
 
